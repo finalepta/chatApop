@@ -144,7 +144,7 @@ h1 {
 
 .form {
   width: 480px;
-  padding: 64px 15px 24px;
+  padding: 64px 15px 24px 0;
   // margin: 0 auto;
   .control {
     margin: 0 0 24px;
