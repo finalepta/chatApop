@@ -86,7 +86,6 @@
     border-bottom: inherit;
   }
   &__field {
-    // padding: 28px;
     position: relative;
     display: flex;
     justify-content: center;
