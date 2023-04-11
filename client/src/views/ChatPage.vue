@@ -1,4 +1,17 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import io from "socket.io-client";
+import { onBeforeMount, ref } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+onBeforeMount(() => {
+  const socket = io("http://localhost:8000");
+  socket.emit("join", route.params.id);
+  socket.on("message", ({ data }) => {
+    console.log(data);
+  });
+});
+</script>
 
 <template>
   <div class="wrapper">

@@ -6,10 +6,11 @@ interface IUser {
 
 interface IMessage {
   user: string;
+  timestamp: Date;
   message: string;
 }
 
-interface IChat {
+export interface IChat {
   name: string;
   users: Array<IUser>;
   messages: Array<IMessage>;
@@ -24,13 +25,11 @@ const chatModel: Schema<IChat> = new Schema({
   users: [
     {
       username: String,
-      required: true,
     },
   ],
   messages: [
     {
       user: String,
-      required: true,
     },
   ],
   password: String,

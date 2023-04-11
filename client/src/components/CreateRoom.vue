@@ -38,7 +38,7 @@ const props = defineProps({
       </div>
       <div class="control block-cube block-input">
         <input
-          name="roomname"
+          name="name"
           type="text"
           placeholder="Room name"
           autocomplete="off"
@@ -86,7 +86,7 @@ const props = defineProps({
       </div>
       <button
         class="btn block-cube block-cube-hover"
-        type="button"
+        type="submit"
       >
         <div class="bg-top">
           <div class="bg-inner"></div>
