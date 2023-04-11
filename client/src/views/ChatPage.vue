@@ -72,7 +72,6 @@
     height: 100%;
     max-height: fit-content;
     border: 1px solid rgba(0, 0, 0, 0.4);
-    // border: 1px solid var(--color-accent);
     border-radius: 8px;
   }
   &__other {
