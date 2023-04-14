@@ -1,11 +1,21 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-// import authMw from "../middlewares/authMw.js";
+import authMw from "../middlewares/authMw.js";
 import Chat from "../models/chatModel.js";
 
 const router = Router();
 dotenv.config();
+declare global {
+  namespace Express {
+    interface Request {
+      user: {
+        username: string;
+        room: string;
+      };
+    }
+  }
+}
 
 function generateToken(username: string, room: string) {
   return jwt.sign({ username, room }, process.env.SECRET_KEY!, {
@@ -54,15 +64,16 @@ router.post("/join", async (req: Request, res: Response) => {
   }
 });
 
-// router.get("/check", async (req: Request, res: Response) => {
-//   try {
-//     const token = generateToken(req.user.username, req.user.room);
-//     if (!token)
-//       return res.status(401).json({ message: "User is not authorized" });
-//     return res.json({ token });
-//   } catch (e) {
-//     res.status(500).json({ message: e });
-//   }
-// });
+router.get("/check", authMw, async (req: Request, res: Response) => {
+  try {
+    const token = generateToken(req.user.username, req.user.room);
+    if (!token)
+      return res.status(403).json({ message: "User is not authorized" });
+    return res.json({ token });
+  } catch (e) {
+    console.log(e);
+    return res.status(404).json({ message: e });
+  }
+});
 
 export default router;

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import io, { Socket } from "socket.io-client";
 import { onBeforeMount, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "../stores/userStore";
 
 const userStore = useUserStore();
-const message = ref("");
 const route = useRoute();
+const router = useRouter();
+
+const message = ref("");
 const socket = io("http://localhost:8000");
 
 onBeforeMount(() => {
@@ -17,6 +19,12 @@ onBeforeMount(() => {
 const sendMessage = () => {
   socket.emit("message");
 };
+
+const leaveRoom = () => {
+  userStore.setUser({});
+  localStorage.removeItem("token");
+  router.push("/");
+};
 </script>
 
 <template>
@@ -25,7 +33,12 @@ const sendMessage = () => {
       <div class="chat__wrapper">
         <div class="chat__header">
           <div class="chat__name">some name</div>
-          <button class="chat__btn">Leave room</button>
+          <button
+            class="chat__btn"
+            @click="leaveRoom"
+          >
+            Leave room
+          </button>
         </div>
         <div class="chat__other">
           <div class="chat__messages"></div>

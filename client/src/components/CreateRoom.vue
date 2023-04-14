@@ -6,7 +6,7 @@ import { useRoute, useRouter } from "vue-router";
 
 const userStore = useUserStore();
 const route = useRoute();
-// const router = useRouter();
+const router = useRouter();
 
 const username = ref("");
 const name = ref("");
@@ -23,6 +23,7 @@ const click = async () => {
       user = await join(username.value, name.value, password.value);
     }
     userStore.setUser(user);
+    router.push(`/room/${name.value}`);
   } catch (e) {
     alert(e);
   }
@@ -34,6 +35,7 @@ const click = async () => {
     <form
       class="form"
       autocomplete="off"
+      @submit.prevent="click"
     >
       <div class="control">
         <h1 v-if="create">Create your own room</h1>
@@ -119,8 +121,7 @@ const click = async () => {
       </div>
       <button
         class="btn block-cube block-cube-hover"
-        type="button"
-        @click="click"
+        type="submit"
       >
         <div class="bg-top">
           <div class="bg-inner"></div>

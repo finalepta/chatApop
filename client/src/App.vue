@@ -1,21 +1,28 @@
 <script setup lang="ts">
-import { RouterView } from "vue-router";
+import { ref, onMounted } from "vue";
+import { RouterView, useRouter } from "vue-router";
+import { check } from "./http/userHttp";
 import { useUserStore } from "./stores/userStore";
 
 const userStore = useUserStore();
+const router = useRouter();
 
-// const loading = ref(true);
-// onMounted(() => {
-//   check()
-//     .then(data => {
-//       if (data) userStore.setUser(data);
-//     })
-//     .finally(() => (loading.value = false));
-// });
+const loading = ref(true);
+onMounted(() => {
+  check()
+    .then(data => {
+      if (data) {
+        userStore.setUser({ username: data.username, room: data.room });
+        router.push(`/room/${data.room}`);
+      }
+    })
+    .catch(e => {})
+    .finally(() => (loading.value = false));
+});
 </script>
 
 <template>
-  <!-- <div
+  <div
     class="loaing"
     v-if="loading"
   >
@@ -35,7 +42,7 @@ const userStore = useUserStore();
         <div></div>
       </div>
     </div>
-  </div> -->
+  </div>
   <router-view></router-view>
 </template>
 
