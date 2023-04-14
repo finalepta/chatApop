@@ -1,10 +1,32 @@
 <script setup lang="ts">
-const props = defineProps({
-  create: {
-    type: Boolean,
-    required: true,
-  },
-});
+import { computed, ref } from "vue";
+import { sign, join } from "../http/userHttp.js";
+import { useUserStore } from "../stores/userStore";
+import { useRoute, useRouter } from "vue-router";
+
+const userStore = useUserStore();
+const route = useRoute();
+// const router = useRouter();
+
+const username = ref("");
+const name = ref("");
+const password = ref("");
+
+const create = computed(() => route.fullPath.slice(1) === "create");
+
+const click = async () => {
+  try {
+    let user;
+    if (route.fullPath.slice(1) === "create") {
+      user = await sign(username.value, name.value, password.value);
+    } else {
+      user = await join(username.value, name.value, password.value);
+    }
+    userStore.setUser(user);
+  } catch (e) {
+    alert(e);
+  }
+};
 </script>
 
 <template>
@@ -20,11 +42,14 @@ const props = defineProps({
       <div class="control block-cube block-input">
         <input
           name="username"
+          v-model="username"
           type="text"
           placeholder="Username"
           autocomplete="off"
           readonly
           onfocus="this.removeAttribute('readonly')"
+          minlength="3"
+          maxlength="20"
         />
         <div class="bg-top">
           <div class="bg-inner"></div>
@@ -39,11 +64,15 @@ const props = defineProps({
       <div class="control block-cube block-input">
         <input
           name="name"
+          v-model="name"
           type="text"
+          id="name"
           placeholder="Room name"
           autocomplete="off"
           readonly
           onfocus="this.removeAttribute('readonly')"
+          minlength="3"
+          maxlength="20"
         />
         <div class="bg-top">
           <div class="bg-inner"></div>
@@ -59,15 +88,19 @@ const props = defineProps({
         <input
           v-if="create"
           name="password"
+          v-model="password"
           type="password"
           placeholder="Room password (optional)"
           autocomplete="off"
           readonly
           onfocus="this.removeAttribute('readonly')"
+          minlength="3"
+          maxlength="20"
         />
         <input
           v-else
           name="password"
+          v-model="password"
           type="password"
           placeholder="Room password (if needed)"
           autocomplete="off"
@@ -86,7 +119,8 @@ const props = defineProps({
       </div>
       <button
         class="btn block-cube block-cube-hover"
-        type="submit"
+        type="button"
+        @click="click"
       >
         <div class="bg-top">
           <div class="bg-inner"></div>
@@ -104,8 +138,8 @@ const props = defineProps({
           Create room
         </div>
         <div
-          class="text"
           v-else
+          class="text"
         >
           Join room
         </div>

@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 import { onBeforeMount, ref } from "vue";
 import { useRoute } from "vue-router";
+import { useUserStore } from "../stores/userStore";
 
+const userStore = useUserStore();
+const message = ref("");
 const route = useRoute();
+const socket = io("http://localhost:8000");
+
 onBeforeMount(() => {
-  const socket = io("http://localhost:8000");
-  socket.emit("join", route.params.id);
-  socket.on("message", ({ data }) => {
-    console.log(data);
-  });
+  socket.connect();
+  socket.emit("join", { room: route.params.id, user: userStore.user });
 });
+
+const sendMessage = () => {
+  socket.emit("message");
+};
 </script>
 
 <template>
@@ -25,13 +31,14 @@ onBeforeMount(() => {
           <div class="chat__messages"></div>
         </div>
         <form
-          @submit.prevent=""
+          @submit.prevent="sendMessage"
           class="chat__field"
         >
           <input
             type="text"
             class="chat__input"
             placeholder="Type message"
+            v-model="message"
           />
           <button
             class="chat__send"

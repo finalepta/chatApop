@@ -24,6 +24,7 @@ const option = ref("");
           value="create"
           id="create"
           class="greet__input"
+          :checked="route.fullPath === '/create'"
           @click="$router.push('/create')"
         />
         <label
@@ -36,6 +37,7 @@ const option = ref("");
         <input
           type="radio"
           v-model="option"
+          :checked="route.fullPath === '/join'"
           value="join"
           id="join"
           class="greet__input"
@@ -48,6 +50,9 @@ const option = ref("");
         >
       </li>
     </ul>
+    <div class="greet__create">
+      <CreateRoom />
+    </div>
   </div>
 </template>
 

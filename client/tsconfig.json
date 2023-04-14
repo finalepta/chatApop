@@ -8,9 +8,11 @@
     },
     "strict": true,
     "module": "NodeNext",
-    "target": "ESNext"
+    "target": "ES2022",
+    "lib": ["ES2018", "DOM"],
+    "allowJs": true,
+    "outDir": "dist"
   },
-
   "references": [
     {
       "path": "./tsconfig.node.json"

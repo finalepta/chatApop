@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import GreetPage from "../views/GreetPage.vue";
 import ChatPage from "../views/ChatPage.vue";
+import CreateView from "../views/CreateView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,7 +16,19 @@ const router = createRouter({
       name: "chat",
       component: ChatPage,
     },
+    {
+      path: "/create",
+      name: "create",
+      component: CreateView,
+    },
+    {
+      path: "/join",
+      name: "join",
+      component: CreateView,
+    },
   ],
 });
+
+router.beforeEach;
 
 export default router;

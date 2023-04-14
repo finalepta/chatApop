@@ -12,7 +12,7 @@ io.on("connection", socket => {
   socket.on("join", roomId => {
     socket.join(roomId);
 
-    socket.emit("message", {
+    socket.broadcast.to(roomId).emit("message", {
       data: "выфавыфа",
     });
   });
