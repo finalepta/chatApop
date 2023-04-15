@@ -1,16 +1,34 @@
 import { defineStore } from "pinia";
+import type { IUser } from "./userStore";
+
+interface IMessage {
+  user: string;
+  timestamp: string;
+  message: string;
+}
 
 export const useRoomStore = defineStore("roomStore", {
   state: () => ({
-    users: [] as object[],
-    messages: [] as object[],
+    name: "",
+    password: "" as string | undefined,
+    users: [] as Array<IUser>,
+    messages: [] as Array<IMessage>,
   }),
   actions: {
-    setUsers(users: object[]) {
+    setName(name: string) {
+      this.name = name;
+    },
+    setPassword(name: string) {
+      this.name = name;
+    },
+    setUsers(users: Array<IUser>) {
       this.users = users;
     },
-    setMessages(msgs: object[]) {
+    setMessages(msgs: Array<IMessage>) {
       this.messages = msgs;
+    },
+    addMessage(msg: IMessage) {
+      this.messages.push(msg);
     },
   },
 });

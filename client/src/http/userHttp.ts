@@ -1,7 +1,7 @@
 //@ts-nocheck
 import { $host } from ".";
 import jwt_decode from "jwt-decode";
-import type { StateTree } from "pinia";
+import { AxiosError } from "axios";
 
 interface Token {
   token: string;
@@ -20,16 +20,22 @@ export const sign = async (
   password: string
 ): Promise<object> => {
   try {
-    const data = await $host.post<Token>("/api/create", {
+    const response = await $host.post<Token>("/api/create", {
       username,
       name: room,
       password,
     });
-    const { token } = data.data;
-    localStorage.setItem("token", token);
-    return jwt_decode(token);
+    if (response.data.token) {
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+      return jwt_decode(token);
+    } else {
+      throw new Error(response.data.message).message;
+    }
   } catch (e) {
-    console.log(e);
+    if (typeof e == AxiosError)
+      throw new Error("There is some problem. Try again later");
+    else throw new Error(e).message;
   }
 };
 
@@ -38,21 +44,39 @@ export const join = async (
   room: string,
   password: string
 ): Promise<IUser> => {
-  const data = await $host.post<Token>("/api/join", {
-    username,
-    room,
-    password,
-  });
-
-  const { token } = data.data;
-  localStorage.setItem("token", token);
-  return jwt_decode(token);
+  try {
+    const response = await $host.post<Token>("/api/join", {
+      username,
+      name: room,
+      password,
+    });
+    if (response.data.token) {
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+      return jwt_decode(token);
+    } else {
+      throw new Error(response.data.message).message;
+    }
+  } catch (e) {
+    if (typeof e == AxiosError)
+      throw new Error("There is some problem. Try again later");
+    else throw new Error(e).message;
+  }
 };
 
 export const check = async (): Promise<IUser> => {
-  const data = await $host.get<Token>("/api/check");
-  const { token } = data.data;
-  if (!token) return;
-  localStorage.setItem("token", token);
-  return jwt_decode(token);
+  const header = localStorage.getItem("token");
+  if (header) {
+    const data = await $host.get<Token>("/api/check", {
+      headers: {
+        Authorization: `Bearer ${header}`,
+      },
+    });
+    const { token } = data.data;
+    if (!token) return;
+    localStorage.setItem("token", token);
+    return jwt_decode(token);
+  } else {
+    return;
+  }
 };

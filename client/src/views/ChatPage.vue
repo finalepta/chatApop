@@ -1,29 +1,53 @@
 <script setup lang="ts">
-import io, { Socket } from "socket.io-client";
-import { onBeforeMount, ref } from "vue";
+import io from "socket.io-client";
+import { getRoom } from "../http/roomHttp";
+import { computed, onBeforeMount, ref, watch, type ComputedRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "../stores/userStore";
+import { useRoomStore } from "../stores/roomStore";
 
 const userStore = useUserStore();
+const roomStore = useRoomStore();
 const route = useRoute();
 const router = useRouter();
 
+const room = ref();
 const message = ref("");
 const socket = io("http://localhost:8000");
+const title = ref("");
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
+  room.value = await getRoom(route.params.id as string);
+
+  roomStore.setName(room.value.name);
+  roomStore.setPassword(room.value.password);
+  roomStore.setUsers(room.value.users);
+  roomStore.setMessages(room.value.messages);
+
+  title.value = roomStore.name;
   socket.connect();
-  socket.emit("join", { room: route.params.id, user: userStore.user });
+  socket.emit("join", { room: route.params.id });
+  socket.on("message", data => {
+    console.log(data);
+  });
 });
 
 const sendMessage = () => {
-  socket.emit("message");
+  console.log(userStore.user.username);
+
+  socket.emit("sendMessage", {
+    user: userStore.user.username,
+    message: message.value,
+    timestamp: Date.now(),
+  });
+  message.value = "";
 };
 
 const leaveRoom = () => {
   userStore.setUser({});
   localStorage.removeItem("token");
   router.push("/");
+  socket.disconnect();
 };
 </script>
 
@@ -32,7 +56,7 @@ const leaveRoom = () => {
     <div class="chat">
       <div class="chat__wrapper">
         <div class="chat__header">
-          <div class="chat__name">some name</div>
+          <div class="chat__name">{{ title }}</div>
           <button
             class="chat__btn"
             @click="leaveRoom"

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import authMw from "../middlewares/authMw.js";
@@ -28,9 +28,7 @@ router.post("/create", async (req: Request, res: Response) => {
     const { username, name, password } = req.body;
     const room = await Chat.findOne({ name });
     if (room) {
-      return res
-        .status(409)
-        .json({ message: "Room with this name already exists" });
+      return res.json({ message: "Room with this name already exists" });
     }
     const chat = await Chat.create({
       users: [],
@@ -50,8 +48,8 @@ router.post("/join", async (req: Request, res: Response) => {
   try {
     const { username, name, password } = req.body;
     const room = await Chat.findOne({ name });
-    if (!room) return res.status(404).json({ message: "Room not found" });
-    if (room.users.filter(el => el.username === username))
+    if (!room) return res.json({ message: "Room not found" });
+    if (room.users.some(el => el.username === username))
       return res.json({ message: "This username is already taken" });
     if (room.password !== password)
       return res.json({ message: "Incorrect password" });

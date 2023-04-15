@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 import { sign, join } from "../http/userHttp.js";
 import { useUserStore } from "../stores/userStore";
 import { useRoute, useRouter } from "vue-router";
@@ -11,8 +11,15 @@ const router = useRouter();
 const username = ref("");
 const name = ref("");
 const password = ref("");
+const error = ref("");
 
 const create = computed(() => route.fullPath.slice(1) === "create");
+const showError = (el: Ref, text: string) => {
+  el.value = text;
+  setTimeout(function () {
+    el.value = "";
+  }, 5000);
+};
 
 const click = async () => {
   try {
@@ -24,8 +31,8 @@ const click = async () => {
     }
     userStore.setUser(user);
     router.push(`/room/${name.value}`);
-  } catch (e) {
-    alert(e);
+  } catch (e: any) {
+    showError(error, e);
   }
 };
 </script>
@@ -37,6 +44,12 @@ const click = async () => {
       autocomplete="off"
       @submit.prevent="click"
     >
+      <div
+        class="error-message"
+        v-if="error"
+      >
+        <span class="error-text">{{ error }}</span>
+      </div>
       <div class="control">
         <h1 v-if="create">Create your own room</h1>
         <h1 v-else>Join somebody's room</h1>
@@ -175,6 +188,41 @@ body {
 
 h1 {
   font-size: 23px;
+}
+
+.error-message {
+  background-color: transparent;
+  border: 1px solid #730707;
+  padding: 20px 30px;
+  margin: 0px 0 30px 0;
+  opacity: 0;
+  animation-name: error-animation;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+.error-text {
+  color: #b90d0d;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 20px;
+  // text-shadow: 1px 1px rgba(250, 250, 250, 0.3);
+}
+
+@keyframes error-animation {
+  0% {
+    transform: translateY(-170%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(20%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
 }
 
 .form {
