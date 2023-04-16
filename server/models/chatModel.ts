@@ -6,7 +6,8 @@ interface IUser {
 
 export interface IMessage {
   user: string;
-  timestamp: string;
+  color?: string;
+  timestamp: number;
   message: string;
 }
 
@@ -30,7 +31,8 @@ const chatModel: Schema<IChat> = new Schema({
   messages: [
     {
       user: String,
-      timestamp: String,
+      color: String,
+      timestamp: Number,
       message: String,
     },
   ],

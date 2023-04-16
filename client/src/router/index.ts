@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import GreetPage from "../views/GreetPage.vue";
 import ChatPage from "../views/ChatPage.vue";
 import CreateView from "../views/CreateView.vue";
-import { useUserStore } from "../stores/userStore";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -30,6 +29,13 @@ const router = createRouter({
   ],
 });
 
-// router.beforeEach((to, from, next) => {});
+router.beforeEach((to, from, next) => {
+  const token = !!localStorage.getItem("token");
+  if (to.name === "chat" && !token) {
+    next({ name: "home" });
+  } else {
+    next();
+  }
+});
 
 export default router;

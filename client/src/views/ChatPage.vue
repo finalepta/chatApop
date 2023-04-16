@@ -1,50 +1,71 @@
 <script setup lang="ts">
 import io from "socket.io-client";
-import { getRoom } from "../http/roomHttp";
-import { computed, onBeforeMount, ref, watch, type ComputedRef } from "vue";
+import { getRoom, type IChat, type IMessage } from "../http/roomHttp";
+import { computed, onBeforeMount, ref, type ComputedRef, type Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useUserStore } from "../stores/userStore";
-import { useRoomStore } from "../stores/roomStore";
 
-const userStore = useUserStore();
-const roomStore = useRoomStore();
 const route = useRoute();
 const router = useRouter();
 
-const room = ref();
+const room: Ref<IChat> = ref({} as IChat);
+const user = ref("");
 const message = ref("");
 const socket = io("http://localhost:8000");
-const title = ref("");
+const loading = ref(true);
 
 onBeforeMount(async () => {
-  room.value = await getRoom(route.params.id as string);
+  const response = await getRoom(route.params.id as string);
+  room.value = response.chat;
+  user.value = response.user;
 
-  roomStore.setName(room.value.name);
-  roomStore.setPassword(room.value.password);
-  roomStore.setUsers(room.value.users);
-  roomStore.setMessages(room.value.messages);
-
-  title.value = roomStore.name;
   socket.connect();
   socket.emit("join", { room: route.params.id });
   socket.on("message", data => {
     console.log(data);
+    room.value.messages.push();
   });
+
+  loading.value = false;
 });
 
-const sendMessage = () => {
-  console.log(userStore.user.username);
+function formatTime(timestamp: number) {
+  const dateObj = new Date(timestamp);
+  const hours = dateObj.getHours();
+  const minutes = dateObj.getMinutes();
 
-  socket.emit("sendMessage", {
-    user: userStore.user.username,
+  const formattedHours = hours < 10 ? `0${hours}` : hours;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+  return `${formattedHours}:${formattedMinutes}`;
+}
+
+function getRandomColor() {
+  const min = 64;
+  const max = 191;
+
+  const red = Math.floor(Math.random() * (max - min + 1)) + min;
+  const green = Math.floor(Math.random() * (max - min + 1)) + min;
+  const blue = Math.floor(Math.random() * (max - min + 1)) + min;
+
+  return `rgb(${red}, ${green}, ${blue})`;
+}
+
+const sendMessage = () => {
+  const msg: IMessage = {
+    user: user.value,
     message: message.value,
     timestamp: Date.now(),
-  });
+    color: room.value.messages.some(el => el.user === user.value)
+      ? room.value.messages.find(el => el.user === user.value)?.color
+      : getRandomColor(),
+  };
+  console.log(msg);
+  room.value.messages.push(msg);
+  socket.emit("sendMessage", msg);
   message.value = "";
 };
 
 const leaveRoom = () => {
-  userStore.setUser({});
   localStorage.removeItem("token");
   router.push("/");
   socket.disconnect();
@@ -56,7 +77,7 @@ const leaveRoom = () => {
     <div class="chat">
       <div class="chat__wrapper">
         <div class="chat__header">
-          <div class="chat__name">{{ title }}</div>
+          <div class="chat__name">{{ room.name }}</div>
           <button
             class="chat__btn"
             @click="leaveRoom"
@@ -64,8 +85,53 @@ const leaveRoom = () => {
             Leave room
           </button>
         </div>
-        <div class="chat__other">
-          <div class="chat__messages"></div>
+        <div class="chat__messages">
+          <div
+            class="loading"
+            v-if="loading"
+          >
+            Loading messages...
+          </div>
+          <div
+            v-else
+            v-for="msg in room.messages"
+            :id="`${msg.timestamp}`"
+            :class="{ chat__right: msg.user === user }"
+          >
+            <div
+              v-if="msg.user === user"
+              class="chat__message-right"
+            >
+              <div
+                class="chat__avatar-right"
+                :style="{ backgroundColor: msg.color }"
+              >
+                ME
+              </div>
+              <div class="chat__text-right">
+                {{ msg.message }}
+              </div>
+              <div class="chat__time-right">
+                {{ formatTime(msg.timestamp) }}
+              </div>
+            </div>
+
+            <div
+              class="chat__message"
+              v-else
+            >
+              <div
+                class="chat__avatar"
+                :style="{ backgroundColor: msg.color }"
+              >
+                {{ msg.user.charAt(0) }}
+              </div>
+              <div class="chat__text">
+                {{ msg.message }}
+              </div>
+              <div class="chat__time">{{ formatTime(msg.timestamp) }}</div>
+            </div>
+          </div>
         </div>
         <form
           @submit.prevent="sendMessage"
@@ -110,7 +176,7 @@ const leaveRoom = () => {
   padding: 50px 0 0 0;
 }
 .chat {
-  width: 980px;
+  width: 1100px;
   height: 82vh;
   margin: 0 auto;
   border-radius: 16px;
@@ -131,9 +197,10 @@ const leaveRoom = () => {
     border: 1px solid rgba(0, 0, 0, 0.4);
     border-radius: 8px;
   }
-  &__other {
-    padding: 28px;
-    height: 88%;
+  &__messages {
+    padding: 20px;
+    height: 100%;
+    overflow: auto;
   }
   &__header {
     display: flex;
@@ -171,7 +238,7 @@ const leaveRoom = () => {
   }
   &__input {
     padding: 16px 40px 16px 21px;
-    width: 89%;
+    width: 96%;
     border: 1px solid var(--color-accent);
     border-radius: 16px;
     background-color: rgba(51, 52, 53, 0.6);
@@ -199,6 +266,65 @@ const leaveRoom = () => {
           fill-opacity: 1;
         }
       }
+    }
+  }
+  &__message {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    margin: 10px 0;
+    width: 65%;
+    &-right {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-start;
+      align-items: flex-end;
+      margin: 10px 0;
+      width: 65%;
+    }
+  }
+  &__right {
+    display: flex;
+    justify-content: end;
+  }
+  &__avatar {
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    margin-right: 15px;
+    flex-shrink: 0;
+    &-right {
+      height: 30px;
+      width: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      margin-left: 15px;
+      flex-shrink: 0;
+    }
+  }
+  &__text {
+    background-color: #ffa473;
+    padding: 10px;
+    border-radius: 24px 16px 16px 4px;
+    &-right {
+      background-color: #ffa473;
+      padding: 10px;
+      border-radius: 16px 24px 4px 16px;
+    }
+  }
+  &__time {
+    font-size: 14px;
+    color: rgb(138, 159, 179);
+    margin-left: 15px;
+    &-right {
+      font-size: 14px;
+      color: rgb(138, 159, 179);
+      margin-right: 15px;
     }
   }
 }

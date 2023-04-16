@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRoute } from "vue-router";
-import CreateRoom from "../components/CreateRoom.vue";
 
-const route = useRoute();
 const option = ref("");
 </script>
 

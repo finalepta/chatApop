@@ -2,9 +2,7 @@
 import { ref, onMounted } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import { check } from "./http/userHttp";
-import { useUserStore } from "./stores/userStore";
 
-const userStore = useUserStore();
 const router = useRouter();
 
 const loading = ref(true);
@@ -12,7 +10,6 @@ onMounted(() => {
   check()
     .then(data => {
       if (data) {
-        userStore.setUser({ username: data.username, room: data.room });
         router.push(`/room/${data.room}`);
       }
     })

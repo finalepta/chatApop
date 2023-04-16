@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, type Ref } from "vue";
 import { sign, join } from "../http/userHttp.js";
-import { useUserStore } from "../stores/userStore";
 import { useRoute, useRouter } from "vue-router";
+import type { IToken } from "../http/userHttp";
 
-const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
 
@@ -23,13 +22,12 @@ const showError = (el: Ref, text: string) => {
 
 const click = async () => {
   try {
-    let user;
+    let user: IToken;
     if (route.fullPath.slice(1) === "create") {
       user = await sign(username.value, name.value, password.value);
     } else {
       user = await join(username.value, name.value, password.value);
     }
-    userStore.setUser(user);
     router.push(`/room/${name.value}`);
   } catch (e: any) {
     showError(error, e);

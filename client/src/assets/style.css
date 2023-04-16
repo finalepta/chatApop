@@ -6,6 +6,9 @@
   --color-accent-hover: #ff9e68;
   --color-accent-active: #ff7528;
 }
+* {
+  box-sizing: border-box;
+}
 body {
   color: #fff;
   font-family: monospace, serif;

@@ -7,7 +7,7 @@ interface Token {
   token: string;
 }
 
-interface IUser {
+export interface IToken {
   username: string;
   room: string;
   iat: Date;
@@ -18,7 +18,7 @@ export const sign = async (
   username: string,
   room: string,
   password: string
-): Promise<object> => {
+): Promise<IToken> => {
   try {
     const response = await $host.post<Token>("/api/create", {
       username,
@@ -43,7 +43,7 @@ export const join = async (
   username: string,
   room: string,
   password: string
-): Promise<IUser> => {
+): Promise<IToken> => {
   try {
     const response = await $host.post<Token>("/api/join", {
       username,
@@ -64,7 +64,7 @@ export const join = async (
   }
 };
 
-export const check = async (): Promise<IUser> => {
+export const check = async (): Promise<IToken> => {
   const header = localStorage.getItem("token");
   if (header) {
     const data = await $host.get<Token>("/api/check", {
