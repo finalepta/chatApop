@@ -17,6 +17,14 @@ const loading = ref(true);
 
 onBeforeMount(async () => {
   const response = await getRoom(route.params.id as string);
+
+  socket.connect();
+  socket.emit("join", { room: route.params.id });
+  socket.on("message", data => {
+    console.log(123);
+    room.chat.messages.push(data);
+  });
+
   room.chat = response.chat;
   user.value = response.user;
 

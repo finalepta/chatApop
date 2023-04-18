@@ -15,9 +15,10 @@ io.on("connection", socket => {
     socket.join(roomId.room);
     const room = await Chat.findOne({ name: roomId.room });
     socket.on("sendMessage", async (msg: IMessage) => {
+      console.log(msg);
       room?.messages.push(msg);
       await room?.save();
-      socket.broadcast.to(roomId).emit("message", msg);
+      io.to(roomId).emit("message", msg);
     });
 
     socket.on("disconnect", () => {
