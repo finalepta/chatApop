@@ -7,8 +7,7 @@
   "scripts": {
     "dev": "nodemon index.ts",
     "build": "rm -r dist && tsc",
-    "start": "npm run build && node dist/index",
-    "install": "npm i"
+    "start": "node dist/index"
   },
   "keywords": [],
   "author": "",
