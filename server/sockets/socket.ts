@@ -7,7 +7,7 @@ import Chat from "../models/chatModel.js";
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "https://fastidious-caramel-a438c3.netlify.app" },
+  cors: { origin: "*" },
 });
 
 io.on("connection", socket => {

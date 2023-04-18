@@ -21,8 +21,7 @@ onBeforeMount(async () => {
   socket.connect();
   socket.emit("join", { room: route.params.id });
   socket.on("message", data => {
-    console.log(data);
-    room.value.messages.push();
+    room.value.messages.push(data);
   });
 
   loading.value = false;
