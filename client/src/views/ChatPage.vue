@@ -10,7 +10,7 @@ const router = useRouter();
 const room: Ref<IChat> = ref({} as IChat);
 const user = ref("");
 const message = ref("");
-const socket = io("https://chatapp-server-g3av.onrender.com");
+const socket = io("https://chatapp-server-g3av.onrender.com/");
 const loading = ref(true);
 
 onBeforeMount(async () => {
