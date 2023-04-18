@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import io from "socket.io-client";
 import { getRoom, type IChat, type IMessage } from "../http/roomHttp";
-import { computed, onBeforeMount, ref, type Ref } from "vue";
+import { computed, onBeforeMount, reactive, ref, type Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
 
-const room: Ref<IChat> = ref({} as IChat);
+const room = reactive({
+  chat: {} as IChat,
+});
 const user = ref("");
 const message = ref("");
 const socket = io("https://chatapp-server-g3av.onrender.com/");
@@ -15,14 +17,8 @@ const loading = ref(true);
 
 onBeforeMount(async () => {
   const response = await getRoom(route.params.id as string);
-  room.value = response.chat;
+  room.chat = response.chat;
   user.value = response.user;
-
-  socket.connect();
-  socket.emit("join", { room: route.params.id });
-  socket.on("message", data => {
-    room.value.messages.push(data);
-  });
 
   loading.value = false;
 });
@@ -54,12 +50,12 @@ const sendMessage = () => {
     user: user.value,
     message: message.value,
     timestamp: Date.now(),
-    color: room.value.messages.some(el => el.user === user.value)
-      ? room.value.messages.find(el => el.user === user.value)?.color
+    color: room.chat.messages.some(el => el.user === user.value)
+      ? room.chat.messages.find(el => el.user === user.value)?.color
       : getRandomColor(),
   };
   console.log(msg);
-  room.value.messages.push(msg);
+  room.chat.messages.push(msg);
   socket.emit("sendMessage", msg);
   message.value = "";
 };
@@ -76,7 +72,7 @@ const leaveRoom = () => {
     <div class="chat">
       <div class="chat__wrapper">
         <div class="chat__header">
-          <div class="chat__name">{{ room.name }}</div>
+          <div class="chat__name">{{ room.chat.name }}</div>
           <button
             class="chat__btn"
             @click="leaveRoom"
@@ -93,7 +89,7 @@ const leaveRoom = () => {
           </div>
           <div
             v-else
-            v-for="msg in room.messages"
+            v-for="msg in room.chat.messages"
             :id="`${msg.timestamp}`"
             :class="{ chat__right: msg.user === user }"
           >
