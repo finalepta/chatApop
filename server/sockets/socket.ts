@@ -12,13 +12,14 @@ const io = new Server(server, {
 
 io.on("connection", socket => {
   socket.on("join", async roomId => {
-    socket.join(roomId.room);
+    // socket.join(roomId.room);
     const room = await Chat.findOne({ name: roomId.room });
     socket.on("sendMessage", async (msg: IMessage) => {
+      console.log(1);
       console.log(msg);
       room?.messages.push(msg);
       await room?.save();
-      io.to(roomId).emit("message", msg);
+      socket.broadcast.emit("message", msg);
     });
 
     socket.on("disconnect", () => {
