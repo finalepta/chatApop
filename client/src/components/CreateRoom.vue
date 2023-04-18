@@ -2,17 +2,19 @@
 import { computed, ref, type Ref } from "vue";
 import { sign, join } from "../http/userHttp.js";
 import { useRoute, useRouter } from "vue-router";
-import type { IToken } from "../http/userHttp";
 
 const route = useRoute();
 const router = useRouter();
+
+const props = defineProps({
+  create: String,
+});
 
 const username = ref("");
 const name = ref("");
 const password = ref("");
 const error = ref("");
 
-const create = computed(() => route.fullPath.slice(1) === "create");
 const showError = (el: Ref, text: string) => {
   el.value = text;
   setTimeout(function () {
@@ -22,11 +24,10 @@ const showError = (el: Ref, text: string) => {
 
 const click = async () => {
   try {
-    let user: IToken;
-    if (route.fullPath.slice(1) === "create") {
-      user = await sign(username.value, name.value, password.value);
+    if (props.create === "create") {
+      await sign(username.value, name.value, password.value);
     } else {
-      user = await join(username.value, name.value, password.value);
+      await join(username.value, name.value, password.value);
     }
     router.push(`/room/${name.value}`);
   } catch (e: any) {
@@ -49,7 +50,7 @@ const click = async () => {
         <span class="error-text">{{ error }}</span>
       </div>
       <div class="control">
-        <h1 v-if="create">Create your own room</h1>
+        <h1 v-if="create === 'create'">Create your own room</h1>
         <h1 v-else>Join somebody's room</h1>
       </div>
       <div class="control block-cube block-input">
@@ -99,7 +100,7 @@ const click = async () => {
       </div>
       <div class="control block-cube block-input">
         <input
-          v-if="create"
+          v-if="create === 'create'"
           name="password"
           v-model="password"
           type="password"
@@ -144,7 +145,7 @@ const click = async () => {
           <div class="bg-inner"></div>
         </div>
         <div
-          v-if="create"
+          v-if="create === 'create'"
           class="text"
         >
           Create room
@@ -378,5 +379,9 @@ h1 {
     }
   }
 }
-// /room creation styles
+@media (max-width: 567px) {
+  .form {
+    width: 100%;
+  }
+}
 </style>

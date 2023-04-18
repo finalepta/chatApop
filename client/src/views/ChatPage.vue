@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import io from "socket.io-client";
 import { getRoom, type IChat, type IMessage } from "../http/roomHttp";
-import { computed, onBeforeMount, reactive, ref, type Ref } from "vue";
+import { onBeforeMount, onUpdated, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
@@ -11,8 +11,10 @@ const room = reactive({
   chat: {} as IChat,
 });
 const user = ref("");
+const isOpen = ref(false);
 const message = ref("");
 const socket = io("https://chatapp-server-g3av.onrender.com/");
+const scrollableDiv = ref();
 const loading = ref(true);
 
 onBeforeMount(async () => {
@@ -21,7 +23,6 @@ onBeforeMount(async () => {
   socket.connect();
   socket.emit("join", { room: route.params.id });
   socket.on("message", data => {
-    console.log(123);
     room.chat.messages.push(data);
   });
 
@@ -29,6 +30,10 @@ onBeforeMount(async () => {
   user.value = response.user;
 
   loading.value = false;
+});
+
+onUpdated(() => {
+  scrollableDiv.value.scrollTop = scrollableDiv.value.scrollHeight;
 });
 
 function formatTime(timestamp: number) {
@@ -62,7 +67,6 @@ const sendMessage = () => {
       ? room.chat.messages.find(el => el.user === user.value)?.color
       : getRandomColor(),
   };
-  console.log(msg);
   room.chat.messages.push(msg);
   socket.emit("sendMessage", msg);
   message.value = "";
@@ -80,7 +84,23 @@ const leaveRoom = () => {
     <div class="chat">
       <div class="chat__wrapper">
         <div class="chat__header">
-          <div class="chat__name">{{ room.chat.name }}</div>
+          <div class="chat__info">
+            <div class="chat__name">{{ room.chat.name }}</div>
+            <div class="chat__dropdown">
+              <button
+                class="chat__button"
+                @click="isOpen = !isOpen"
+              >
+                {{ isOpen ? "Hide users ▲" : "Show users ▼" }}
+              </button>
+              <ul
+                class="chat__list"
+                v-if="isOpen"
+              >
+                <li v-for="user in room.chat.users">{{ user.username }}</li>
+              </ul>
+            </div>
+          </div>
           <button
             class="chat__btn"
             @click="leaveRoom"
@@ -88,7 +108,10 @@ const leaveRoom = () => {
             Leave room
           </button>
         </div>
-        <div class="chat__messages">
+        <div
+          class="chat__messages"
+          ref="scrollableDiv"
+        >
           <div
             class="loading"
             v-if="loading"
@@ -200,10 +223,57 @@ const leaveRoom = () => {
     border: 1px solid rgba(0, 0, 0, 0.4);
     border-radius: 8px;
   }
+  &__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+  &__button {
+    background-color: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 13px;
+    margin-left: 10px;
+  }
+  &__list {
+    position: absolute;
+    top: 12px;
+    left: 98px;
+    background-color: rgb(46, 49, 60);
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    list-style-type: none;
+  }
   &__messages {
     padding: 20px;
     height: 100%;
     overflow: auto;
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    /* Define the scrollbar track */
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* Define the scrollbar thumb */
+    &::-webkit-scrollbar-thumb {
+      background: linear-gradient(
+        0deg,
+        rgb(32, 32, 32) 0%,
+        rgba(23, 26, 35, 0.8) 100%
+      );
+      border-radius: 5px;
+    }
+
+    /* Define the scrollbar thumb on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: #a1a1a1;
+    }
   }
   &__header {
     display: flex;
@@ -312,10 +382,14 @@ const leaveRoom = () => {
   }
   &__text {
     background-color: #ffa473;
+
+    word-break: break-all;
     padding: 10px;
     border-radius: 24px 16px 16px 4px;
     &-right {
       background-color: #ffa473;
+
+      word-break: break-all;
       padding: 10px;
       border-radius: 16px 24px 4px 16px;
     }
@@ -328,6 +402,51 @@ const leaveRoom = () => {
       font-size: 14px;
       color: rgb(138, 159, 179);
       margin-right: 15px;
+    }
+  }
+}
+@media (max-width: 1200px) {
+  .wrapper {
+    padding: 0;
+  }
+  .chat {
+    height: 100%;
+    width: 100%;
+  }
+}
+@media (max-width: 768px) {
+  .chat {
+    padding: 10px;
+    &__message,
+    &__message-right {
+      width: 80%;
+    }
+    &__text,
+    &__text-right {
+      word-wrap: break-word;
+      word-break: break-all;
+    }
+    &__input {
+      padding-right: 50px;
+    }
+  }
+}
+@media (max-width: 576px) {
+  .chat {
+    &__name {
+      font-size: 20px;
+    }
+    &__message,
+    &__message-right {
+      width: 100%;
+    }
+    &__text,
+    &__text-right {
+      word-wrap: break-word;
+      word-break: break-all;
+    }
+    &__btn {
+      padding: 13px 12px;
     }
   }
 }

@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import GreetPage from "../views/GreetPage.vue";
 import ChatPage from "../views/ChatPage.vue";
 import CreateView from "../views/CreateView.vue";
 
@@ -9,22 +8,12 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: GreetPage,
+      component: CreateView,
     },
     {
       path: "/room/:id",
       name: "chat",
       component: ChatPage,
-    },
-    {
-      path: "/create",
-      name: "create",
-      component: CreateView,
-    },
-    {
-      path: "/join",
-      name: "join",
-      component: CreateView,
     },
   ],
 });

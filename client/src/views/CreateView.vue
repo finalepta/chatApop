@@ -24,8 +24,6 @@ const option = ref("");
           value="create"
           id="create"
           class="greet__input"
-          :checked="route.fullPath === '/create'"
-          @click="$router.push('/create')"
         />
         <label
           for="create"
@@ -37,11 +35,9 @@ const option = ref("");
         <input
           type="radio"
           v-model="option"
-          :checked="route.fullPath === '/join'"
           value="join"
           id="join"
           class="greet__input"
-          @click="$router.push('/join')"
         />
         <label
           for="join"
@@ -50,8 +46,11 @@ const option = ref("");
         >
       </li>
     </ul>
-    <div class="greet__create">
-      <CreateRoom />
+    <div
+      class="greet__create"
+      v-if="option"
+    >
+      <CreateRoom :create="option" />
     </div>
   </div>
 </template>
@@ -133,6 +132,20 @@ const option = ref("");
 
   &__option input[type="radio"]:checked + label:hover {
     color: var(--color-text-white);
+  }
+}
+@media (max-width: 768px) {
+  .greet {
+    padding: 6vh 14vw;
+    &__choose {
+      width: auto;
+    }
+  }
+}
+@media (max-width: 576px) {
+  .greet {
+    padding: 3vh 6vw;
+    margin: 0 auto;
   }
 }
 </style>
