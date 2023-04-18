@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import io from "socket.io-client";
 import { getRoom, type IChat, type IMessage } from "../http/roomHttp";
-import { computed, onBeforeMount, ref, type ComputedRef, type Ref } from "vue";
+import { computed, onBeforeMount, ref, type Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
