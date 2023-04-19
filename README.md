@@ -6,7 +6,7 @@
   <h3 align="center">Chat App</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    Simple pet project of Chat App
     <br />
     <a href="https://github.com/finalepta/chatApp"><strong>Explore the docs »</strong></a>
     <br />
