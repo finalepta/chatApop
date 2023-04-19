@@ -382,13 +382,11 @@ const leaveRoom = () => {
   }
   &__text {
     background-color: #ffa473;
-
     word-break: break-all;
     padding: 10px;
     border-radius: 24px 16px 16px 4px;
     &-right {
       background-color: #ffa473;
-
       word-break: break-all;
       padding: 10px;
       border-radius: 16px 24px 4px 16px;
