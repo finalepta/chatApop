@@ -86,18 +86,18 @@ In order to start this project from local PC, you need to follow this steps belo
    npm install
    ```
 3. Make `.env` files in client and server folders
-  * For **client** folder .env should contain only one line: 
-    ```sh 
-    VITE_APP_HOST_URL=<your-local-host>
-    ```
-  * For **server** folder it has couple lines more:
-    ```sh
-    PORT=8000
-    MONGODB_URI=<your-mongo-db-uri>
-    SECRET_KEY=<secret-key-for-jwt-token>
-    ```
+    * For **client** folder .env should contain only one line: 
+      ```sh 
+      VITE_APP_HOST_URL=<your-local-host>
+      ```
+    * For **server** folder it has couple lines more:
+      ```sh
+      PORT=8000
+      MONGODB_URI=<your-mongo-db-uri>
+      SECRET_KEY=<secret-key-for-jwt-token>
+      ```
 4. Run in both folders starting script and you are settled!
-  ```sh
-  npm run dev
-  ```
+    ```sh
+    npm run dev
+    ```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
