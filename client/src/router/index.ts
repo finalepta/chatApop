@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import ChatPage from "../views/ChatPage.vue";
 import CreateView from "../views/CreateView.vue";
+import NotFound from "../components/NotFound.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,6 +16,7 @@ const router = createRouter({
       name: "chat",
       component: ChatPage,
     },
+    { path: "/:pathMatch(.*)*", component: NotFound },
   ],
 });
 

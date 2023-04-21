@@ -26,3 +26,13 @@ export const getRoom = async (room: string): Promise<Response> => {
   const chat = response.data.room;
   return { chat, user: response.data.user };
 };
+
+export const removeUser = async (room: string, username: string) => {
+  const response = await $host.delete("/api/chat/", {
+    data: {
+      name: room,
+      username,
+    },
+  });
+  console.log(response);
+};

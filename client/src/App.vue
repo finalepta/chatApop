@@ -131,7 +131,7 @@ onMounted(() => {
   height: 200px;
   display: inline-block;
   overflow: hidden;
-  background: #ffffff;
+  background-color: transparent;
   position: absolute;
   top: 50%;
   left: 49%;

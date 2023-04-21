@@ -14,4 +14,17 @@ router.get("/:id", authMw, async (req: Request, res: Response) => {
   }
 });
 
+router.delete("/", async (req: Request, res: Response) => {
+  try {
+    const { name, username } = req.body;
+    const room = await Chat.findOne({ name });
+    if (!room) return res.status(404).json({ message: "room not found" });
+    room.users = room.users.filter(el => el.username !== username);
+    await room.save();
+    return res.status(200);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 export default router;

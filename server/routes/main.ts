@@ -51,7 +51,7 @@ router.post("/join", async (req: Request, res: Response) => {
     if (!room) return res.json({ message: "Room not found" });
     if (room.users.some(el => el.username === username))
       return res.json({ message: "This username is already taken" });
-    if (room.password !== password)
+    if (room.password && room.password !== password)
       return res.json({ message: "Incorrect password" });
     room.users.push({ username });
     await room.save();

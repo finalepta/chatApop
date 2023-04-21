@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import io from "socket.io-client";
-import { getRoom, type IChat, type IMessage } from "../http/roomHttp";
+import {
+  getRoom,
+  removeUser,
+  type IChat,
+  type IMessage,
+} from "../http/roomHttp";
 import { onBeforeMount, onUpdated, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -73,6 +78,7 @@ const sendMessage = () => {
 };
 
 const leaveRoom = () => {
+  removeUser(room.chat.name, user.value);
   localStorage.removeItem("token");
   router.push("/");
   socket.disconnect();
