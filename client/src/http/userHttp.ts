@@ -14,11 +14,7 @@ export interface IToken {
   eat: Date;
 }
 
-export const sign = async (
-  username: string,
-  room: string,
-  password: string
-): Promise<IToken> => {
+export const sign = async (username: string, room: string, password: string): Promise<IToken> => {
   try {
     const response = await $host.post<Token>("/api/create", {
       username,
@@ -33,17 +29,14 @@ export const sign = async (
       throw new Error(response.data.message).message;
     }
   } catch (e) {
-    if (typeof e == AxiosError)
+    if (typeof e == AxiosError) {
+      console.log(e);
       throw new Error("There is some problem. Try again later");
-    else throw new Error(e).message;
+    } else throw new Error(e).message;
   }
 };
 
-export const join = async (
-  username: string,
-  room: string,
-  password: string
-): Promise<IToken> => {
+export const join = async (username: string, room: string, password: string): Promise<IToken> => {
   try {
     const response = await $host.post<Token>("/api/join", {
       username,
@@ -58,8 +51,7 @@ export const join = async (
       throw new Error(response.data.message).message;
     }
   } catch (e) {
-    if (typeof e == AxiosError)
-      throw new Error("There is some problem. Try again later");
+    if (typeof e == AxiosError) throw new Error("There is some problem. Try again later");
     else throw new Error(e).message;
   }
 };

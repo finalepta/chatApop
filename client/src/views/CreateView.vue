@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRoute } from "vue-router";
 import CreateRoom from "../components/CreateRoom.vue";
 
-const route = useRoute();
 const option = ref("");
 </script>
 
@@ -12,8 +10,7 @@ const option = ref("");
     <h1 class="greet__title">Welcome to ChatApp!</h1>
     <h3
       class="greet__subtitle"
-      v-if="!option"
-    >
+      v-if="!option">
       Connect to room or create one
     </h3>
     <ul class="greet__choose">
@@ -23,8 +20,7 @@ const option = ref("");
           v-model="option"
           value="create"
           id="create"
-          class="greet__input"
-        />
+          class="greet__input" />
         <label
           for="create"
           class="greet__label"
@@ -37,8 +33,7 @@ const option = ref("");
           v-model="option"
           value="join"
           id="join"
-          class="greet__input"
-        />
+          class="greet__input" />
         <label
           for="join"
           class="greet__label"
@@ -48,8 +43,7 @@ const option = ref("");
     </ul>
     <div
       class="greet__create"
-      v-if="option"
-    >
+      v-if="option">
       <CreateRoom :create="option" />
     </div>
   </div>

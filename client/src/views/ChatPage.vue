@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import io from "socket.io-client";
-import {
-  getRoom,
-  removeUser,
-  type IChat,
-  type IMessage,
-} from "../http/roomHttp";
+import { getRoom, removeUser, type IChat, type IMessage } from "../http/roomHttp";
 import { onBeforeMount, onUpdated, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -95,49 +90,41 @@ const leaveRoom = () => {
             <div class="chat__dropdown">
               <button
                 class="chat__button"
-                @click="isOpen = !isOpen"
-              >
+                @click="isOpen = !isOpen">
                 {{ isOpen ? "Hide users ▲" : "Show users ▼" }}
               </button>
               <ul
                 class="chat__list"
-                v-if="isOpen"
-              >
+                v-if="isOpen">
                 <li v-for="user in room.chat.users">{{ user.username }}</li>
               </ul>
             </div>
           </div>
           <button
             class="chat__btn"
-            @click="leaveRoom"
-          >
+            @click="leaveRoom">
             Leave room
           </button>
         </div>
         <div
           class="chat__messages"
-          ref="scrollableDiv"
-        >
+          ref="scrollableDiv">
           <div
             class="loading"
-            v-if="loading"
-          >
+            v-if="loading">
             Loading messages...
           </div>
           <div
             v-else
             v-for="msg in room.chat.messages"
             :id="`${msg.timestamp}`"
-            :class="{ chat__right: msg.user === user }"
-          >
+            :class="{ chat__right: msg.user === user }">
             <div
               v-if="msg.user === user"
-              class="chat__message-right"
-            >
+              class="chat__message-right">
               <div
                 class="chat__avatar-right"
-                :style="{ backgroundColor: msg.color }"
-              >
+                :style="{ backgroundColor: msg.color }">
                 ME
               </div>
               <div class="chat__text-right">
@@ -150,12 +137,10 @@ const leaveRoom = () => {
 
             <div
               class="chat__message"
-              v-else
-            >
+              v-else>
               <div
                 class="chat__avatar"
-                :style="{ backgroundColor: msg.color }"
-              >
+                :style="{ backgroundColor: msg.color }">
                 {{ msg.user.charAt(0) }}
               </div>
               <div class="chat__text">
@@ -167,31 +152,26 @@ const leaveRoom = () => {
         </div>
         <form
           @submit.prevent="sendMessage"
-          class="chat__field"
-        >
+          class="chat__field">
           <input
             type="text"
             class="chat__input"
             placeholder="Type message"
-            v-model="message"
-          />
+            v-model="message" />
           <button
             class="chat__send"
-            type="submit"
-          >
+            type="submit">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
               viewBox="0 0 24 24"
-              fill="none"
-            >
+              fill="none">
               <path
                 d="M5.74 15.75a39.14 39.14 0 0 0-1.3 3.91c-.55 2.37-.95 2.9 1.11 1.78 2.07-1.13 12.05-6.69 14.28-7.92 2.9-1.61 2.94-1.49-.16-3.2C17.31 9.02 7.44 3.6 5.55 2.54c-1.89-1.07-1.66-.6-1.1 1.77.17.76.61 2.08 1.3 3.94a4 4 0 0 0 3 2.54l5.76 1.11a.1.1 0 0 1 0 .2L8.73 13.2a4 4 0 0 0-3 2.54Z"
                 id="send_24__Mask"
                 fill="var(--color-accent)"
-                fill-opacity=".6"
-              />
+                fill-opacity=".6" />
             </svg>
           </button>
         </form>
@@ -212,11 +192,7 @@ const leaveRoom = () => {
   height: 82vh;
   margin: 0 auto;
   border-radius: 16px;
-  background: linear-gradient(
-    0deg,
-    rgb(51, 52, 53) 0%,
-    rgba(50, 56, 72, 0.8) 100%
-  );
+  background: linear-gradient(0deg, rgb(51, 52, 53) 0%, rgba(50, 56, 72, 0.8) 100%);
   max-height: fit-content;
 
   padding: 30px;
@@ -268,11 +244,7 @@ const leaveRoom = () => {
 
     /* Define the scrollbar thumb */
     &::-webkit-scrollbar-thumb {
-      background: linear-gradient(
-        0deg,
-        rgb(32, 32, 32) 0%,
-        rgba(23, 26, 35, 0.8) 100%
-      );
+      background: linear-gradient(0deg, rgb(32, 32, 32) 0%, rgba(23, 26, 35, 0.8) 100%);
       border-radius: 5px;
     }
 

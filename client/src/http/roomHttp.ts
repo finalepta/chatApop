@@ -28,11 +28,11 @@ export const getRoom = async (room: string): Promise<Response> => {
 };
 
 export const removeUser = async (room: string, username: string) => {
-  const response = await $host.delete("/api/chat/", {
+  console.log("disconnected");
+  await $host.delete("/api/chat/", {
     data: {
       name: room,
       username,
     },
   });
-  console.log(response);
 };
