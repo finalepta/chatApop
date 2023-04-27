@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/finalepta/chatApp">
+  <a href="https://github.com/sweeeeetch/chatApp">
     <img src="client/public/speech-bubble-svgrepo-com.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -8,14 +8,14 @@
   <p align="center">
     Simple pet project of Chat App
     <br />
-    <a href="https://github.com/finalepta/chatApp"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/sweeeeetch/chatApp"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://fastidious-caramel-a438c3.netlify.app">View Demo</a>
     ·
-    <a href="https://github.com/finalepta/chatApp/issues">Report Bug</a>
+    <a href="https://github.com/sweeeeetch/chatApp/issues">Report Bug</a>
     ·
-    <a href="https://github.com/finalepta/chatApp/issues">Request Feature</a>
+    <a href="https://github.com/sweeeeetch/chatApp/issues">Request Feature</a>
   </p>
 </div>
 
@@ -79,7 +79,7 @@ In order to start this project from local PC, you need to follow this steps belo
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/finalepta/chatApp.git
+   git clone https://github.com/sweeeeetch/chatApp.git
    ```
 2. Install NPM packages in both client and server folders
    ```sh
