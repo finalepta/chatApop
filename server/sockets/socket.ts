@@ -19,7 +19,7 @@ io.on("connection", socket => {
       console.log(msg);
       room?.messages.push(msg);
       await room?.save();
-      socket.broadcast.to(roomId).emit("message", msg);
+      socket.broadcast.to(roomId.room).emit("message", msg);
     });
 
     socket.on("disconnect", () => {
