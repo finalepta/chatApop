@@ -41,9 +41,9 @@
 
 ## About The Project
 
-This project is a full-stack chat application using the latest technologies and frameworks. It is designed to provide an easy to use and functional chat experience. We have combined Node.js, Vue, and Socket.io to create an efficient and robust chat application.
+This project is a full-stack chat application using the latest technologies and frameworks. It is designed to provide an easy to use and functional chat experience. I have combined Node.js, Vue, and Socket.io to create an efficient and robust chat application.
 
-The application consists of both a client-side and server-side component. On the client side, we are using Vue and Socket.io to create a powerful and interactive user interface. On the server side, we are using Node.js and Express to create a secure API to manage chat rooms and messages. 
+The application consists of both a client-side and server-side component. On the client side, i am using Vue and Socket.io to create a powerful and interactive user interface. On the server side, i am using Node.js and Express to create a secure API to manage chat rooms and messages. 
 
 This project is designed to allow users to create rooms, join them, and send and receive messages in real-time. I have implemented a variety of features to make the experience of using the application easier and more enjoyable. 
 
